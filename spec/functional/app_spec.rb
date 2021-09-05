@@ -27,3 +27,4 @@ RSpec.describe 'App Functional Test' do
     end
   end
 end
+
