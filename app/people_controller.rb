@@ -8,101 +8,85 @@ require 'time'
   def normalize
      arr =[]
      s_arr =[]
-  save_all =[]
+     save_all =[]
   
     # get the data
-    f2 = File.readlines('spec/fixtures/people_by_dollar.txt')
     f1 = File.readlines('spec/fixtures/people_by_percent.txt')
-
-  
+    f2 = File.readlines('spec/fixtures/people_by_dollar.txt')
+    
 
     # remove the newlines
     f1 = f1.map {|elem| elem.chomp}
     f2 = f2.map {|elem| elem.chomp}
 
+    #testing output on a different txt file
     File.open('newFile.txt', 'w') do |output_file|
-      #enumerate over the array length (take advantage of same size for both arrays)
-      # f1.each_with_index do |elem, i|
-      #    arr << elem
-      # # output the string interpolation
-      #  che2 = elem.gsub!(/[!@%&"]/, ',')
-      #  rev = che2.split('')
-     
-      # # puts "REVERSER #{rev}"
-      # output_file.puts "#{che2}" + "\n" 
-      # end
-       f1.each_with_index do |elem2, i|    
-         
-        if i == 0
-  
-      else
-         che = elem2.gsub!(/[!@%&$"]/, ',').split(/\s*,\s*/)
-
-
-          time = Time.parse(che[2])
-          birthday = time.strftime("%-m/%-d/%Y")
-     
-         che[2]   = birthday
-       
-        
-      # s_arr << che
-       arr << che
- 
-      output_file.puts "#{che}" 
-      end
-        
-     
-       
+      #enumerate over the array length (take advantage of same size for both arrays)   
       
+      # Looping through file 1 to read the lines
+      f1.each_with_index do |element, i|            
+      if i == 0
+        #If it is the header in the file then ignore
+      else
+
+        data_from_file = element.gsub!(/[!@%&$"]/, ',').split(/\s*,\s*/)  #removing all symbols from the data in the txt
+        
+         #formatting birthdate from file
+        time = Time.parse(data_from_file[2])  
+        birthday = time.strftime("%-m/%-d/%Y")
+        data_from_file[2] = birthday
+        
+        #push all data from file to an array
+        arr << data_from_file
+        output_file.puts "#{data_from_file}"  #push to newFile.txt
+      end   
       end
 
-      f2.each_with_index do |elem2, i|    
+
+      # Looping through file 2 to read the lines
+      f2.each_with_index do |element, i|    
         
         if i == 0
-          puts "INDEX HEADER"
-      else
-         che = elem2.gsub!(/[!@%&$"]/, ',').split(/\s*,\s*/)
-         puts "CHECK BRITHDAY INDEX #{che[1]}"
-          puts "CHECK CIty INDEX #{che[0]}"
-          time = Time.parse(che[1])
-          birthday = time.strftime("%-m/%-d/%Y")
-          puts "che2 BIRTHD TIME  #{birthday}"
+         #If it is the header in the file then ignore
+       else
 
-          if che[0] == "LA"
-            che[0] = "Los Angeles"
+         data_from_file2 = element.gsub!(/[!@%&$"]/, ',').split(/\s*,\s*/) #removing all $% symbols from the data in the txt
+        
+          #formatting birthdate from file
+          time = Time.parse(data_from_file2[1])
+          birthday = time.strftime("%-m/%-d/%Y")
+          data_from_file2[2] = birthday
+
+          #Need to format the City to match whats is in the spec
+          if data_from_file2[0] == "LA"
+            data_from_file2[0] = "Los Angeles"
           else
-            che[0] = "New York City"
+            data_from_file2[0] = "New York City"
           end
-     
-          che[0],che[3], che[1],che[2],che[3]   = che[3],che[0],che[0],birthday,che[2]
+
+
+          #Swapping positions from the datafile array
+          data_from_file2[0],data_from_file2[3], data_from_file2[1],data_from_file2[2],data_from_file2[3]   = data_from_file2[3],data_from_file2[0],data_from_file2[0],birthday,data_from_file2[2]
        
-  
-       s_arr << che
+          #push all data from file 2 to an array
+          s_arr << data_from_file2
      
-      output_file.puts "#{che.delete_at(3)}" 
+          output_file.puts "#{data_from_file2.delete_at(3)}"  #deleting lastname from array -- not needed
       end
-        
-     
-     
       end
 
     end
-    puts "ARRAY---->>#{arr} and s_arr ARRAY---->>#{s_arr}"
-    
-    all_arr = arr.reverse + s_arr
+  
+  
+    all_arr = arr.reverse + s_arr  # i reversed array in file one and merged with array in file 2
 
-
+    #looping throughr array and assigning data to a new array to match the spec
     all_arr.each do |values|
-     look ="#{values[0].strip}, #{values[1].strip}, #{values[2].strip}"
- 
-      
-      puts "LookL ---->>>#{look}"
-       save_all << look
-
+     data_together ="#{values[0].strip}, #{values[1].strip}, #{values[2].strip}"
+      save_all << data_together
     end
-puts "SAVE ALL ---->>>#{save_all}"
-  
-      return save_all
+
+    return save_all
 
    end
 
